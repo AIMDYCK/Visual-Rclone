@@ -10,15 +10,14 @@
 
     <!-- Version de la aplicacion. Se refleja en las propiedades del EXE
          (Archivo > Propiedades > Detalles) y en AssemblyInformationalVersion.
-         v2.4: fix del Monitor de Trafico para montajes VFS (flag
-         rc-enable-metrics + suma de velocidades del array "transferring"). -->
-    <Version>2.4.0</Version>
-    <AssemblyVersion>2.4.0.0</AssemblyVersion>
-    <FileVersion>2.4.0.0</FileVersion>
+         v1.0.0: primera release publica de Visual Rclone. -->
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <Product>Visual Rclone</Product>
     <AssemblyTitle>Visual Rclone</AssemblyTitle>
     <Company>Visual Rclone</Company>
-    <InformationalVersion>2.4.0 - Visual Rclone</InformationalVersion>
+    <InformationalVersion>1.0.0 - Visual Rclone</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
