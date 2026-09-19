@@ -1,0 +1,171 @@
+# =============================================================================
+#  Rclone Commander Advanced - .gitignore
+#  Strict .NET / WPF ignore rules.
+#  IMPORTANT: this repository must NEVER contain user configuration, personal
+#  paths, tokens or credentials. See the "Local configuration & secrets"
+#  section at the bottom.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+#  Build results
+# -----------------------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+build/
+builds/
+publish/
+[Pp]ublish/
+artifacts/
+*.dll
+*.exe
+*.pdb
+*.mdb
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+*.nupkg
+*.snupkg
+*.nuspec
+
+# -----------------------------------------------------------------------------
+#  Visual Studio / Rider / VS Code
+# -----------------------------------------------------------------------------
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.rsuser
+*.DotSettings.user
+*.sln.ide/
+*.VC.db
+*.VC.VC.opendb
+.vsconfig
+*.code-workspace
+
+# -----------------------------------------------------------------------------
+#  NuGet
+# -----------------------------------------------------------------------------
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# -----------------------------------------------------------------------------
+#  Test / coverage
+# -----------------------------------------------------------------------------
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+[Cc]overage[Rr]eport/
+*.trx
+
+# -----------------------------------------------------------------------------
+#  Windows / OS junk
+# -----------------------------------------------------------------------------
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.cab
+*.bak
+*.gho
+*.ori
+*.orig
+*.torrent
+
+# -----------------------------------------------------------------------------
+#  Local configuration & secrets  (CRITICAL - DO NOT COMMIT)
+# -----------------------------------------------------------------------------
+# Application settings (contains the user's remotes, drive letters, PIN hash,
+# RC credentials and personal paths).
+appsettings.json
+appsettings.*.json
+!appsettings.example.json
+
+# rclone configuration (contains OAuth tokens and remote credentials).
+rclone.conf
+rclone.conf.bak
+*.conf
+!appsettings.example.json
+
+# Local databases / caches.
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.cache
+
+# Secrets, tokens and environment files.
+*.secret
+*.secrets
+secrets.json
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.key
+*.pem
+*.cer
+*.crt
+*.token
+*.credentials
+
+# Logs produced at runtime.
+*.log
+logs/
+log/

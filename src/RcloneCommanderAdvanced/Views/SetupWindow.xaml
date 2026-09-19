@@ -1,0 +1,113 @@
+<Window x:Class="RcloneCommanderAdvanced.Views.SetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{DynamicResource Str_SetupTitle}"
+        Height="640" Width="540"
+        MinHeight="600" MinWidth="520"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Background="{StaticResource BgDeepBrush}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="32,28,32,28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Encabezado -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,18">
+                <TextBlock Text="{DynamicResource Str_AppBrand}" Style="{StaticResource HeaderText}" />
+                <TextBlock Text="{DynamicResource Str_AppBrandSuffix}" Foreground="{StaticResource AccentBrush}"
+                           FontSize="13" FontWeight="Bold" Margin="0,2,0,0" />
+                <TextBlock Text="{DynamicResource Str_SetupHeader}"
+                           Style="{StaticResource SubHeaderText}" Margin="0,10,0,0" />
+            </StackPanel>
+
+            <!-- REQUISITOS: siempre visible, destacado en color de acento -->
+            <Border Grid.Row="1" Margin="0,0,0,18"
+                    Padding="12,10"
+                    CornerRadius="6"
+                    Background="#12233A"
+                    BorderBrush="{StaticResource AccentBrush}"
+                    BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str_SetupPinRequirements}"
+                               Foreground="{StaticResource AccentBrush}"
+                               FontSize="11" FontWeight="Bold" />
+                    <TextBlock Text="{Binding RequirementText}"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               FontSize="13" FontWeight="SemiBold"
+                               TextWrapping="Wrap" Margin="0,4,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- Aviso -->
+            <Border Grid.Row="2" Style="{StaticResource PanelBorder}" Margin="0,0,0,18">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str_SetupProtectPanel}"
+                               Style="{StaticResource BodyText}" FontWeight="SemiBold" />
+                    <TextBlock Style="{StaticResource SubHeaderText}"
+                               TextWrapping="Wrap" Margin="0,8,0,0"
+                               Text="{DynamicResource Str_SetupCreatePinDescription}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Formulario -->
+            <StackPanel Grid.Row="3">
+                <TextBlock Text="{DynamicResource Str_SetupMasterPin}" Style="{StaticResource SubHeaderText}" Margin="0,0,0,6" />
+                <PasswordBox x:Name="PinBox"
+                             Style="{StaticResource DarkPasswordBox}"
+                             PasswordChanged="OnPinChanged" />
+
+                <TextBlock Text="{DynamicResource Str_SetupConfirmPin}" Style="{StaticResource SubHeaderText}" Margin="0,16,0,6" />
+                <PasswordBox x:Name="ConfirmPinBox"
+                             Style="{StaticResource DarkPasswordBox}"
+                             PasswordChanged="OnConfirmPinChanged" />
+
+                <!-- Frase de recordatorio OPCIONAL -->
+                <TextBlock Style="{StaticResource SubHeaderText}" Margin="0,16,0,6">
+                    <Run Text="{DynamicResource Str_SetupReminderPhrase}" />
+                    <Run Text="{DynamicResource Str_SetupOptional}" Foreground="{StaticResource AccentBrush}" />
+                </TextBlock>
+                <TextBox x:Name="ReminderPhraseBox"
+                         Style="{StaticResource DarkTextBox}"
+                         MaxLength="120"
+                         TextChanged="OnReminderPhraseChanged" />
+                <TextBlock Style="{StaticResource SubHeaderText}"
+                           TextWrapping="Wrap" Margin="0,6,0,0"
+                           Text="{DynamicResource Str_SetupReminderHint}" />
+
+                <!-- Mensaje de error destacado: fondo rojo tenue + borde para que
+                     sea imposible pasarlo por alto. -->
+                <Border Margin="0,14,0,0"
+                        Padding="10,8"
+                        CornerRadius="6"
+                        Background="#2D1418"
+                        BorderBrush="{StaticResource DangerBrush}"
+                        BorderThickness="1"
+                        Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibility}}">
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="{StaticResource DangerBrush}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap" />
+                </Border>
+            </StackPanel>
+
+            <!-- Acciones -->
+            <Button Grid.Row="4"
+                    x:Name="CreatePinButton"
+                    Content="{DynamicResource Str_SetupCreatePinButton}"
+                    Style="{StaticResource PrimaryButton}"
+                    Height="44"
+                    Margin="0,20,0,0"
+                    Command="{Binding CreatePinCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}" />
+        </Grid>
+    </ScrollViewer>
+</Window>

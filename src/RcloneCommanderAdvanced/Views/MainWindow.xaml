@@ -1,0 +1,942 @@
+<Window x:Class="RcloneCommanderAdvanced.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:RcloneCommanderAdvanced.ViewModels"
+        xmlns:models="clr-namespace:RcloneCommanderAdvanced.Models"
+        Title="{DynamicResource Str_AppTitle}"
+        Icon="pack://application:,,,/Assets/app.ico"
+        Height="820" Width="1320"
+        MinHeight="640" MinWidth="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgDeepBrush}">
+
+    <Window.Resources>
+        <!-- Plantilla de tarjeta de remoto generada dinamicamente -->
+        <DataTemplate x:Key="RemoteCardTemplate" DataType="{x:Type vm:RemoteCardViewModel}">
+            <Border Style="{StaticResource RemoteCard}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Cabecera: indicador + nombre + backend -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Ellipse Grid.Column="0"
+                                 Width="12" Height="12"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,10,0"
+                                 Fill="{Binding StatusColor}" />
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="{Binding Name}"
+                                       Style="{StaticResource BodyText}"
+                                       FontWeight="SemiBold"
+                                       FontSize="15"
+                                       TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding BackendType}"
+                                       Style="{StaticResource SubHeaderText}"
+                                       FontSize="11" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                            <Border Background="{StaticResource BgElevatedBrush}"
+                                    CornerRadius="4"
+                                    Padding="8,3"
+                                    HorizontalAlignment="Right">
+                                <TextBlock Text="{Binding StatusText}"
+                                           FontSize="10"
+                                           FontWeight="Bold"
+                                           Foreground="{Binding StatusColor}" />
+                            </Border>
+
+                            <!--
+                                Feature 1: telemetria en tiempo real (RC /core/stats).
+                                Solo visible cuando la unidad esta montada y el
+                                endpoint RC responde.
+                            -->
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,6,0,0"
+                                        HorizontalAlignment="Right"
+                                        Visibility="{Binding IsTelemetryAvailable,
+                                                     Converter={StaticResource BoolToVisibility}}">
+                                <TextBlock Text="&#8595;"
+                                           FontSize="11"
+                                           FontWeight="Bold"
+                                           Margin="0,0,3,0"
+                                           Foreground="#3FB950" />
+                                <TextBlock Text="{Binding DownloadSpeedText}"
+                                           FontFamily="Consolas"
+                                           FontSize="11"
+                                           Margin="0,0,10,0"
+                                           Foreground="#3FB950" />
+                                <TextBlock Text="&#8593;"
+                                           FontSize="11"
+                                           FontWeight="Bold"
+                                           Margin="0,0,3,0"
+                                           Foreground="#58A6FF" />
+                                <TextBlock Text="{Binding UploadSpeedText}"
+                                           FontFamily="Consolas"
+                                           FontSize="11"
+                                           Foreground="#58A6FF" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Letra de unidad + estado -->
+                    <Grid Grid.Row="1" Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="{DynamicResource Str_Drive}" Style="{StaticResource SubHeaderText}" FontSize="10" />
+                            <TextBlock Text="{Binding DriveLabel}"
+                                       Style="{StaticResource BodyText}"
+                                       FontFamily="Consolas"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource AccentBrush}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                            <TextBlock Text="{DynamicResource Str_RcPort}" Style="{StaticResource SubHeaderText}"
+                                       FontSize="10" HorizontalAlignment="Right" />
+                            <TextBlock Text="{Binding RcPort}"
+                                       Style="{StaticResource MonoText}"
+                                       HorizontalAlignment="Right" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Selector de letra -->
+                    <StackPanel Grid.Row="2" Margin="0,14,0,0">
+                        <TextBlock Text="{DynamicResource Str_AssignLetter}" Style="{StaticResource SubHeaderText}"
+                                   FontSize="10" Margin="0,0,0,4" />
+                        <ComboBox Style="{StaticResource DarkComboBox}"
+                                  ItemsSource="{Binding DataContext.AvailableDriveLetters,
+                                                RelativeSource={RelativeSource AncestorType=Window}}"
+                                  SelectedItem="{Binding DriveLetter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <!-- Selector de perfil -->
+                    <StackPanel Grid.Row="3" Margin="0,12,0,0">
+                        <TextBlock Text="{DynamicResource Str_MountProfile}" Style="{StaticResource SubHeaderText}"
+                                   FontSize="10" Margin="0,0,0,4" />
+                        <ComboBox Style="{StaticResource DarkComboBox}"
+                                  ItemsSource="{Binding AvailableProfiles}"
+                                  SelectedValuePath="Type"
+                                  SelectedValue="{Binding ProfileType, Mode=TwoWay}"
+                                  ToolTip="{Binding ProfileDescription}">
+                            <!-- ItemTemplate: se usa tanto en el desplegable como en el
+                                 estado cerrado (SelectionBoxItemTemplate), evitando que
+                                 WPF muestre el nombre completo de la clase (namespace). -->
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type models:MountProfile}">
+                                    <TextBlock Text="{Binding DisplayNameKey, Converter={StaticResource LocalizedKey}}"
+                                               Foreground="{StaticResource ComboForegroundBrush}"
+                                               TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+
+                        <!-- Badge informativo dinamico del perfil activo -->
+                        <Border HorizontalAlignment="Left"
+                                Margin="0,8,0,0"
+                                CornerRadius="4"
+                                Padding="8,3"
+                                BorderThickness="1"
+                                Background="{Binding ProfileBadgeBackground}"
+                                BorderBrush="{Binding ProfileBadgeBorder}">
+                            <TextBlock Text="{Binding ProfileBadgeText}"
+                                       FontSize="9"
+                                       FontWeight="Bold"
+                                       Foreground="{Binding ProfileBadgeForeground}" />
+                        </Border>
+
+                        <!-- Pros y contras del perfil activo (ayuda a decidir) -->
+                        <TextBlock Text="{Binding ProfileProsConsText}"
+                                   Style="{StaticResource HintText}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,8,0,0" />
+                    </StackPanel>
+
+                    <!-- Selector de modo de montaje (red vs disco fisico) -->
+                    <StackPanel Grid.Row="4" Margin="0,12,0,0">
+                        <TextBlock Text="{DynamicResource Str_MountMode}" Style="{StaticResource SubHeaderText}"
+                                   FontSize="10" Margin="0,0,0,4" />
+
+                        <CheckBox Style="{StaticResource DarkCheckBox}"
+                                  Content="{DynamicResource Str_MountAsPhysical}"
+                                  ToolTip="{DynamicResource Str_MountAsPhysicalTooltip}"
+                                  IsChecked="{Binding IsPhysicalDisk, Mode=TwoWay}" />
+
+                        <!-- Pros y contras del modo de montaje elegido -->
+                        <TextBlock Text="{Binding MountModeProsConsText}"
+                                   Style="{StaticResource HintText}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,8,0,0" />
+                    </StackPanel>
+
+                    <!--
+                        FASE 1: Optimizacion VFS (Virtual File System).
+                        Panel plegable con los parametros de rendimiento que se
+                        inyectan en el comando "rclone mount". Todos los controles
+                        usan Binding bidireccional contra RemoteCardViewModel y se
+                        persisten por remoto en el archivo de ajustes.
+                    -->
+                    <Expander Grid.Row="5"
+                              Margin="0,14,0,0"
+                              Style="{StaticResource DarkExpander}"
+                              Header="{DynamicResource Str_VfsOptimization}"
+                              IsExpanded="False">
+                        <StackPanel Margin="0,10,0,0">
+                            <!-- Modo de cache VFS (flag vfs-cache-mode) -->
+                            <TextBlock Text="{DynamicResource Str_VfsCacheMode}"
+                                       Style="{StaticResource SubHeaderText}"
+                                       FontSize="10" Margin="0,0,0,4" />
+                            <ComboBox Style="{StaticResource DarkComboBox}"
+                                      ItemsSource="{Binding VfsCacheModes}"
+                                      SelectedItem="{Binding VfsCacheMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      ToolTip="{DynamicResource Str_VfsCacheModeTooltip}" />
+                            <TextBlock Text="{DynamicResource Str_VfsCacheModeHelp}"
+                                       Style="{StaticResource HintText}"
+                                       TextWrapping="Wrap"
+                                       FontSize="10"
+                                       Margin="0,4,0,0" />
+
+                            <!-- Tamano de buffer (flag buffer-size) -->
+                            <TextBlock Text="{DynamicResource Str_BufferSize}"
+                                       Style="{StaticResource SubHeaderText}"
+                                       FontSize="10" Margin="0,10,0,4" />
+                            <ComboBox Style="{StaticResource DarkComboBox}"
+                                      IsEditable="True"
+                                      ItemsSource="{Binding BufferSizeOptions}"
+                                      Text="{Binding BufferSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      ToolTip="{DynamicResource Str_BufferSizeTooltip}" />
+                            <TextBlock Text="{DynamicResource Str_BufferSizeHelp}"
+                                       Style="{StaticResource HintText}"
+                                       TextWrapping="Wrap"
+                                       FontSize="10"
+                                       Margin="0,4,0,0" />
+
+                            <!-- Tiempo de cache de directorios (flag dir-cache-time) -->
+                            <TextBlock Text="{DynamicResource Str_DirCacheTime}"
+                                       Style="{StaticResource SubHeaderText}"
+                                       FontSize="10" Margin="0,10,0,4" />
+                            <ComboBox Style="{StaticResource DarkComboBox}"
+                                      IsEditable="True"
+                                      ItemsSource="{Binding DirCacheTimeOptions}"
+                                      Text="{Binding DirCacheTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      ToolTip="{DynamicResource Str_DirCacheTimeTooltip}" />
+                            <TextBlock Text="{DynamicResource Str_DirCacheTimeHelp}"
+                                       Style="{StaticResource HintText}"
+                                       TextWrapping="Wrap"
+                                       FontSize="10"
+                                       Margin="0,4,0,0" />
+
+                            <!-- Nota informativa: los valores vacios usan el perfil -->
+                            <TextBlock Text="{DynamicResource Str_VfsHint}"
+                                       Style="{StaticResource HintText}"
+                                       TextWrapping="Wrap"
+                                       Margin="0,10,0,0" />
+                        </StackPanel>
+                    </Expander>
+
+                    <!--
+                        Acciones de la tarjeta.
+                        Se estructura en DOS filas independientes para evitar la
+                        superposicion de controles:
+                          Fila 0 -> opciones (checkboxes apilados verticalmente).
+                          Fila 1 -> botones de accion (UniformGrid de 3 columnas).
+                    -->
+                    <Grid Grid.Row="6" Margin="0,16,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Fila 0: opciones -->
+                        <StackPanel Grid.Row="0" Margin="0,0,0,12">
+                            <CheckBox Style="{StaticResource DarkCheckBox}"
+                                      Content="{DynamicResource Str_IncludeInMountAll}"
+                                      ToolTip="{DynamicResource Str_IncludeInMountAllTooltip}"
+                                      IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                                      Margin="0,0,0,8" />
+
+                            <!--
+                                BUGFIX UX: "Montar como Oculto" queda SIEMPRE visible
+                                pero se DESHABILITA (gris) cuando la unidad se monta
+                                como unidad de red: la directiva NoDrives no oculta
+                                de forma fiable las unidades de red puras, por lo que
+                                la combinacion es incompatible. IsEnabled se enlaza a
+                                CanMountHidden (= !IsNetworkMode) para bloquearla.
+                            -->
+                            <CheckBox Style="{StaticResource DarkCheckBox}"
+                                      Content="{DynamicResource Str_MountAsHidden}"
+                                      ToolTip="{DynamicResource Str_MountAsHiddenTooltip}"
+                                      IsEnabled="{Binding CanMountHidden}"
+                                      IsChecked="{Binding IsHiddenDrive, Mode=TwoWay}" />
+                        </StackPanel>
+
+                        <!--
+                            Fila 1: botones de accion (ANTI-COLISION).
+                            Grid estructurado de 4 columnas: tres columnas Auto
+                            para los botones de icono (Carpeta / Web / CMD) y una
+                            columna elastica (*) para el boton principal Montar.
+                            Cada icono lleva su propio margen derecho para que
+                            nunca se superpongan, y el boton Montar se estira
+                            para ocupar todo el espacio restante.
+                        -->
+                        <Grid Grid.Row="1" Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Boton 1: Abrir en el Explorador (icono carpeta). -->
+                            <Button Grid.Column="0"
+                                    Style="{StaticResource IconActionButton}"
+                                    Width="40" Height="34"
+                                    Padding="0"
+                                    Margin="0,0,8,0"
+                                    ToolTip="{DynamicResource Str_OpenTooltip}"
+                                    IsEnabled="{Binding CanOpenInExplorer}"
+                                    Command="{Binding OpenInExplorerCommand}">
+                                <TextBlock Text="&#xED25;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="15"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Button>
+
+                            <!-- Boton 2: Abrir en el navegador (icono globo terraqueo). -->
+                            <Button Grid.Column="1"
+                                    Style="{StaticResource IconActionButton}"
+                                    Width="40" Height="34"
+                                    Padding="0"
+                                    Margin="0,0,8,0"
+                                    ToolTip="{DynamicResource Str_WebTooltip}"
+                                    Command="{Binding OpenInBrowserCommand}">
+                                <TextBlock Text="&#xE12B;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="15"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Button>
+
+                            <!--
+                                Boton 3: Feature 3, abre la consola de diagnostico
+                                de esta unidad (stdout/stderr en tiempo real).
+                                Icono de terminal.
+                            -->
+                            <Button Grid.Column="2"
+                                    Style="{StaticResource IconActionButton}"
+                                    Width="40" Height="34"
+                                    Padding="0"
+                                    Margin="0,0,8,0"
+                                    ToolTip="{DynamicResource Str_LogsTooltip}"
+                                    Command="{Binding DataContext.OpenLogsCommand,
+                                              RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}">
+                                <TextBlock Text="&#xE756;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="15"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Button>
+
+                            <!--
+                                Boton 4: FEATURE Monitor de Trafico. Abre la
+                                ventana grafica de velocidad (subida/bajada) en
+                                tiempo real de esta unidad. Icono de grafica.
+                            -->
+                            <Button Grid.Column="3"
+                                    Style="{StaticResource IconActionButton}"
+                                    Width="40" Height="34"
+                                    Padding="0"
+                                    Margin="0,0,12,0"
+                                    ToolTip="{DynamicResource Str_TrafficMonitorTooltip}"
+                                    Command="{Binding OpenTrafficMonitorCommand}">
+                                <TextBlock Text="&#xE9D2;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="15"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Button>
+
+                            <!-- Boton MONTAR: accion principal, se estira al resto. -->
+                            <Button Grid.Column="4"
+                                    Content="{Binding MountButtonText}"
+                                    Style="{StaticResource DynamicMountButton}"
+                                    HorizontalAlignment="Stretch"
+                                    MinWidth="0"
+                                    Command="{Binding DataContext.ToggleMountCommand,
+                                              RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}" />
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- ============================================================
+             BARRA SUPERIOR
+             ============================================================ -->
+        <Border Grid.Row="0"
+                Background="{StaticResource BgPanelBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,0,1"
+                Padding="20,14">
+            <!--
+                Estructura estricta de 3 columnas:
+                  Columna 0 (Auto): logo + titulo de marca.
+                  Columna 1 (*):    espaciador dinamico. Absorbe todo el espacio
+                                    sobrante y garantiza que la marca (izquierda)
+                                    y los controles (derecha) NUNCA colisionen,
+                                    incluso con etiquetas largas (fr-FR / de-DE).
+                  Columna 2 (Auto): panel de controles globales.
+            -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" /> <!-- Columna 0: Titulo y Logo -->
+                    <ColumnDefinition Width="*" />    <!-- Columna 1: Espaciador Dinamico (VITAL para evitar colisiones) -->
+                    <ColumnDefinition Width="Auto" /> <!-- Columna 2: Panel de Controles -->
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            MaxWidth="420">
+                    <Image Source="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Icon}"
+                           Width="26" Height="26"
+                           Margin="0,0,10,0"
+                           VerticalAlignment="Center"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+                    <TextBlock Text="{DynamicResource Str_AppBrand}" Style="{StaticResource HeaderText}"
+                               FontSize="17" VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis" />
+                    <TextBlock Text="{DynamicResource Str_AppBrandSuffix}" Foreground="{StaticResource AccentBrush}"
+                               FontSize="11" FontWeight="Bold"
+                               VerticalAlignment="Center" Margin="8,3,0,0"
+                               TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+
+                <!--
+                    Acciones globales.
+                    WrapPanel: cuando la ventana se estrecha o el idioma genera
+                    etiquetas mas largas (fr-FR / de-DE), los controles se
+                    reacomodan en varias lineas en lugar de superponerse.
+                -->
+                <WrapPanel Grid.Column="2" Orientation="Horizontal"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center">
+                    <!--
+                        Feature 2: limitador de ancho de banda en caliente.
+                        Al cambiar la seleccion se aplica a todas las unidades
+                        montadas via POST /core/bwlimit (sin reiniciar procesos).
+                    -->
+                    <!-- Selector de idioma (i18n) -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,12,0"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource Str_Language}"
+                                   Style="{StaticResource SubHeaderText}"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,6,0" />
+                        <ComboBox Style="{StaticResource DarkComboBox}"
+                                  Width="130"
+                                  ItemsSource="{Binding AvailableLanguages}"
+                                  SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Foreground="{StaticResource ComboForegroundBrush}"
+                                               TextTrimming="CharacterEllipsis">
+                                        <Run Text="{Binding Flag, Mode=OneWay}" />
+                                        <Run Text="{Binding DisplayName, Mode=OneWay}" />
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!--
+                        Fase 4: editor interactivo de rclone.conf.
+                        Se ubica a la IZQUIERDA del selector de ancho de banda
+                        para que sea un acceso visible con texto (no un icono
+                        escondido a la derecha). El margen derecho lo separa
+                        del selector de Bandwidth.
+                    -->
+                    <!--
+                        Call to Action principal: gestion de cuentas.
+                        Se usa PrimaryButton (fondo solido de acento + texto blanco)
+                        en lugar de BaseButton para que NO se mimetice con el fondo
+                        oscuro de la barra superior y destaque como accion clave.
+                        El estilo PrimaryButton ya aporta el FontWeight SemiBold.
+                    -->
+                    <Button Style="{StaticResource PrimaryButton}"
+                            Padding="14,7"
+                            FontWeight="SemiBold"
+                            VerticalAlignment="Center"
+                            Margin="0,0,15,0"
+                            Content="{DynamicResource Str_ManageAccounts}"
+                            ToolTip="{DynamicResource Str_ManageAccountsTooltip}"
+                            Click="ManageAccounts_Click" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,12,0"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource Str_Bandwidth}"
+                                   Style="{StaticResource SubHeaderText}"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,6,0" />
+                        <!--
+                            ComboBox editable: el usuario puede elegir una opcion
+                            predefinida o escribir una tasa personalizada
+                            (ej. "500K", "1.5M", "2G"). Al pulsar Enter o perder
+                            el foco se valida con Regex y se aplica en caliente.
+                        -->
+                        <ComboBox x:Name="BandwidthCombo"
+                                  Style="{StaticResource DarkComboBox}"
+                                  Width="120"
+                                  IsEditable="True"
+                                  IsTextSearchEnabled="False"
+                                  StaysOpenOnEdit="True"
+                                  Foreground="White"
+                                  ItemsSource="{Binding BandwidthLimits}"
+                                  SelectedItem="{Binding SelectedBandwidthLimit, Mode=TwoWay}"
+                                  Text="{Binding BandwidthText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                  LostFocus="BandwidthCombo_LostFocus"
+                                  ToolTip="{DynamicResource Str_BandwidthTooltip}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Label}"
+                                               Foreground="{StaticResource ComboForegroundBrush}"
+                                               TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <ComboBox.InputBindings>
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding ApplyCustomBandwidthCommand}" />
+                            </ComboBox.InputBindings>
+                        </ComboBox>
+                        <Button Style="{StaticResource GhostButton}"
+                                Width="40" Height="36"
+                                Padding="2"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"
+                                Margin="6,0,0,0"
+                                ToolTip="{DynamicResource Str_ApplyTooltip}"
+                                Command="{Binding ApplyCustomBandwidthCommand}">
+                            <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="16" />
+                        </Button>
+                    </StackPanel>
+
+                    <Button Style="{StaticResource BaseButton}"
+                            Width="40" Height="36"
+                            Padding="2"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Margin="0,0,8,0"
+                            ToolTip="{DynamicResource Str_SyncRemotes}"
+                            Command="{Binding SyncRemotesCommand}">
+                        <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="16" />
+                    </Button>
+
+                    <Button Style="{StaticResource BaseButton}"
+                            Width="40" Height="36"
+                            Padding="2"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Margin="0,0,8,0"
+                            ToolTip="{DynamicResource Str_Save}"
+                            Command="{Binding SaveConfigurationCommand}">
+                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="16" />
+                    </Button>
+
+                    <Button Style="{StaticResource GhostButton}"
+                            Width="40" Height="36"
+                            Padding="2"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            ToolTip="{DynamicResource Str_Lock}"
+                            Command="{Binding LockSessionCommand}">
+                        <TextBlock Text="&#xE72E;" FontFamily="Segoe MDL2 Assets" FontSize="16" />
+                    </Button>
+                </WrapPanel>
+            </Grid>
+        </Border>
+
+        <!-- ============================================================
+             CUERPO PRINCIPAL
+             ============================================================ -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="340" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Columna izquierda: tarjetas dinamicas -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Barra de acciones globales -->
+                <Border Grid.Row="0" Style="{StaticResource PanelBorder}" Margin="0,0,14,14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{DynamicResource Str_NetworkDrives}" Style="{StaticResource BodyText}"
+                                       FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <Border Background="{StaticResource BgElevatedBrush}" CornerRadius="10"
+                                    Padding="10,3" Margin="12,0,0,0">
+                                <TextBlock Style="{StaticResource MonoText}">
+                                    <Run Text="{Binding MountedCount, Mode=OneWay}" />
+                                    <Run Text="/" />
+                                    <Run Text="{Binding TotalEnabledCount, Mode=OneWay}" />
+                                    <Run Text="{DynamicResource Str_ActiveSuffix}" />
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Content="{DynamicResource Str_MountAll}"
+                                    Style="{StaticResource SuccessButton}"
+                                    Margin="0,0,8,0"
+                                    Command="{Binding MountAllCommand}" />
+
+                            <Button Content="{DynamicResource Str_UnmountAll}"
+                                    Style="{StaticResource DangerButton}"
+                                    Command="{Binding UnmountAllCommand}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- WrapPanel con tarjetas generadas dinamicamente -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <Grid>
+                        <ItemsControl ItemsSource="{Binding Remotes}"
+                                      ItemTemplate="{StaticResource RemoteCardTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+                        <!-- Estado vacio: rclone.conf ausente o sin remotos.
+                             Se muestra solo cuando no hay ninguna tarjeta. -->
+                        <Border Padding="24"
+                                CornerRadius="8"
+                                Background="{StaticResource BgPanelBrush}"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                Visibility="{Binding IsEmptyState,
+                                             Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="&#xE7BA;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="34"
+                                           Foreground="{StaticResource AccentBrush}"
+                                           HorizontalAlignment="Center" />
+                                <TextBlock Text="{Binding EmptyStateTitle}"
+                                           Style="{StaticResource HeaderText}"
+                                           FontSize="16"
+                                           HorizontalAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           Margin="0,14,0,0" />
+                                <TextBlock Text="{Binding EmptyStateMessage}"
+                                           Style="{StaticResource SubHeaderText}"
+                                           HorizontalAlignment="Center"
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           MaxWidth="520"
+                                           Margin="0,8,0,0" />
+
+                                <!-- Instalaciones portables: permitir elegir el rclone.conf manualmente. -->
+                                <Button Command="{Binding LocateConfigFileCommand}"
+                                        Style="{StaticResource PrimaryButton}"
+                                        HorizontalAlignment="Center"
+                                        Padding="18,9"
+                                        Margin="0,18,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE8E5;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,8,0" />
+                                        <TextBlock Text="{DynamicResource Str_LocateConfigButton}"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+
+                                <!--
+                                    Fase 4: acceso directo al editor de cuentas
+                                    desde el estado vacio (sin remotos).
+                                -->
+                                <Button Click="ManageAccounts_Click"
+                                        Style="{StaticResource GhostButton}"
+                                        HorizontalAlignment="Center"
+                                        Padding="18,9"
+                                        Margin="0,10,0,0"
+                                        ToolTip="{DynamicResource Str_ManageAccountsTooltip}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE713;"
+                                                   FontFamily="Segoe MDL2 Assets"
+                                                   FontSize="14"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,8,0" />
+                                        <TextBlock Text="{DynamicResource Str_ManageAccounts}"
+                                                   VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- Columna derecha: mantenimiento + ajustes + log -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!-- Modulo de mantenimiento -->
+                <Border Grid.Row="0" Style="{StaticResource PanelBorder}" Margin="0,0,0,14">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Str_SsdMaintenance}" Style="{StaticResource BodyText}"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="{DynamicResource Str_VfsCache}" Style="{StaticResource SubHeaderText}"
+                                   Margin="0,2,0,14" />
+
+                        <!-- Medidor de uso -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="vfs" Style="{StaticResource MonoText}" />
+                                <TextBlock Grid.Column="1" Text="{Binding VfsCacheSize}"
+                                           Style="{StaticResource MonoText}" />
+                            </Grid>
+
+                            <Grid Grid.Row="1" Margin="0,4,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="vfsMeta" Style="{StaticResource MonoText}" />
+                                <TextBlock Grid.Column="1" Text="{Binding VfsMetaSize}"
+                                           Style="{StaticResource MonoText}" />
+                            </Grid>
+                        </Grid>
+
+                        <Grid Margin="0,14,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="{DynamicResource Str_TotalOnDisk}"
+                                       Style="{StaticResource SubHeaderText}" FontSize="10" />
+                            <TextBlock Grid.Column="1" Text="{Binding VfsTotalSize}"
+                                       Style="{StaticResource MonoText}" FontWeight="Bold" />
+                        </Grid>
+
+                        <!--
+                            Acciones de mantenimiento del SSD.
+                            PURGAR SSD ocupa una fila propia (destacada en rojo) y la
+                            fila inferior reparte REFRESCAR / ABRIR CARPETA al 50%,
+                            evitando que el texto se corte.
+                        -->
+                        <Grid Margin="0,16,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Button Grid.Row="0"
+                                    Content="{DynamicResource Str_PurgeSsd}"
+                                    Style="{StaticResource DangerButton}"
+                                    HorizontalAlignment="Stretch"
+                                    Margin="0,0,0,8"
+                                    Command="{Binding PurgeVfsCommand}" />
+
+                            <UniformGrid Grid.Row="1" Rows="1" Columns="2">
+                                <Button Content="{DynamicResource Str_Refresh}"
+                                        Style="{StaticResource BaseButton}"
+                                        Margin="0,0,6,0"
+                                        Command="{Binding RefreshVfsSizesCommand}" />
+
+                                <Button Content="{DynamicResource Str_OpenFolder}"
+                                        Style="{StaticResource BaseButton}"
+                                        ToolTip="{DynamicResource Str_OpenFolderTooltip}"
+                                        Command="{Binding OpenCacheFolderCommand}" />
+                            </UniformGrid>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!--
+                    Panel de ajustes de la aplicacion.
+                    "Arrancar con Windows" se movio aqui desde la barra superior
+                    para evitar el desbordamiento horizontal de la cabecera.
+                -->
+                <Border Grid.Row="1" Style="{StaticResource PanelBorder}" Margin="0,0,0,14">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Str_Settings}" Style="{StaticResource BodyText}"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="{DynamicResource Str_StartupSection}" Style="{StaticResource SubHeaderText}"
+                                   Margin="0,2,0,12" />
+
+                        <!--
+                            FASE 2: arranque con Windows (modo segundo plano).
+                            Al marcarlo se crea un acceso directo en la carpeta
+                            Startup del usuario con el argumento minimized.
+                        -->
+                        <CheckBox Style="{StaticResource DarkCheckBox}"
+                                  Content="{DynamicResource Str_StartWithWindows}"
+                                  ToolTip="{DynamicResource Str_StartWithWindowsTooltip}"
+                                  IsChecked="{Binding StartWithWindows, Mode=TwoWay}"
+                                  VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Log de actividad -->
+                <Border Grid.Row="2" Style="{StaticResource PanelBorder}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="{DynamicResource Str_Activity}" Style="{StaticResource BodyText}"
+                                   FontWeight="SemiBold" Margin="0,0,0,10" />
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding ActivityLog}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}"
+                                                   Style="{StaticResource MonoText}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,0,0,4" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- ============================================================
+             BARRA DE ESTADO
+             ============================================================ -->
+        <Border Grid.Row="2"
+                Background="{StaticResource BgPanelBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="20,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="{Binding StatusText}"
+                           Style="{StaticResource SubHeaderText}" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" />
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal"
+                            HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <ProgressBar IsIndeterminate="True" Width="90" Height="4"
+                                 Margin="0,0,12,0"
+                                 Background="Transparent"
+                                 Foreground="{StaticResource AccentBrush}"
+                                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+
+                    <!-- Indicadores de entorno (movidos desde la barra superior) -->
+                    <Border Background="{StaticResource BgElevatedBrush}" CornerRadius="4"
+                            Padding="10,5" Margin="0,0,8,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,6,0">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="{StaticResource DangerBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsRcloneAvailable}" Value="True">
+                                                <Setter Property="Fill" Value="{StaticResource SuccessBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock Text="{Binding RcloneVersion}" Style="{StaticResource MonoText}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="{StaticResource BgElevatedBrush}" CornerRadius="4" Padding="10,5">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,6,0">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Fill" Value="{StaticResource DangerBrush}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsWinFspInstalled}" Value="True">
+                                                <Setter Property="Fill" Value="{StaticResource SuccessBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <TextBlock Text="WinFsp" Style="{StaticResource MonoText}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

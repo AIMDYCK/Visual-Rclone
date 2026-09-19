@@ -1,0 +1,428 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ============================================================
+         ENGLISH (en-US) - Default / Fallback language
+         ============================================================ -->
+
+    <!-- Application / Windows -->
+    <s:String x:Key="Str_AppTitle">Visual Rclone</s:String>
+    <s:String x:Key="Str_AppBrand">VISUAL</s:String>
+    <s:String x:Key="Str_AppBrandSuffix">RCLONE</s:String>
+    <s:String x:Key="Str_Language">LANGUAGE</s:String>
+
+    <!-- Top bar -->
+    <s:String x:Key="Str_Bandwidth">BANDWIDTH</s:String>
+    <s:String x:Key="Str_BandwidthTooltip">Limits the upload/download speed of all mounted drives without restarting the processes.</s:String>
+    <s:String x:Key="Str_Apply">APPLY</s:String>
+    <s:String x:Key="Str_ApplyTooltip">Applies the selected limit to all mounted drives.</s:String>
+    <s:String x:Key="Str_SyncRemotes">SYNC REMOTES</s:String>
+    <s:String x:Key="Str_Save">SAVE</s:String>
+    <s:String x:Key="Str_Lock">LOCK</s:String>
+
+    <!-- Remote card -->
+    <s:String x:Key="Str_Drive">DRIVE</s:String>
+    <s:String x:Key="Str_RcPort">RC PORT</s:String>
+    <s:String x:Key="Str_AssignLetter">ASSIGN LETTER</s:String>
+    <s:String x:Key="Str_MountProfile">MOUNT PROFILE</s:String>
+    <s:String x:Key="Str_MountMode">MOUNT MODE</s:String>
+    <s:String x:Key="Str_MountAsPhysical">Mount as Physical Disk (local)</s:String>
+    <s:String x:Key="Str_MountAsPhysicalTooltip">Checked: mounted as a local disk (no --network-mode), with maximum compatibility. Unchecked: mounted as a network drive (--network-mode).</s:String>
+    <s:String x:Key="Str_IncludeInMountAll">Include in Mount All</s:String>
+    <s:String x:Key="Str_IncludeInMountAllTooltip">If checked, this drive will be mounted automatically when you press 'MOUNT ALL'.</s:String>
+    <s:String x:Key="Str_MountAsHidden">Mount as Hidden</s:String>
+    <s:String x:Key="Str_MountAsHiddenTooltip">Warning: the NoDrives policy requires the drive to be mounted as a local physical disk for Windows to hide it in Explorer.</s:String>
+    <s:String x:Key="Str_Open">OPEN</s:String>
+    <s:String x:Key="Str_OpenTooltip">Opens the root of the mounted drive in Windows Explorer.</s:String>
+    <s:String x:Key="Str_Web">WEB</s:String>
+    <s:String x:Key="Str_WebTooltip">Gets the remote's public link with 'rclone link' and opens it in the browser.</s:String>
+    <s:String x:Key="Str_Logs">LOGS</s:String>
+    <s:String x:Key="Str_LogsTooltip">Opens the diagnostic console with this drive's rclone output.</s:String>
+    <s:String x:Key="Str_Mount">MOUNT</s:String>
+    <s:String x:Key="Str_Unmount">UNMOUNT</s:String>
+    <s:String x:Key="Str_Unassigned">UNASSIGNED</s:String>
+    <s:String x:Key="Str_Unknown">unknown</s:String>
+
+    <!-- Status -->
+    <s:String x:Key="Str_StatusMounted">MOUNTED</s:String>
+    <s:String x:Key="Str_StatusStarting">STARTING</s:String>
+    <s:String x:Key="Str_StatusStopping">UNMOUNTING</s:String>
+    <s:String x:Key="Str_StatusError">ERROR</s:String>
+    <s:String x:Key="Str_StatusStopped">STOPPED</s:String>
+    <s:String x:Key="Str_Stopped">Stopped</s:String>
+
+    <!-- Global actions -->
+    <s:String x:Key="Str_NetworkDrives">NETWORK DRIVES</s:String>
+    <s:String x:Key="Str_ActiveSuffix">active</s:String>
+    <s:String x:Key="Str_MountAll">MOUNT ALL</s:String>
+    <s:String x:Key="Str_UnmountAll">UNMOUNT ALL (KILL TREE)</s:String>
+
+    <!-- SSD maintenance -->
+    <s:String x:Key="Str_SsdMaintenance">SSD MAINTENANCE</s:String>
+    <s:String x:Key="Str_VfsCache">rclone VFS cache</s:String>
+    <s:String x:Key="Str_VfsOptimization">VFS performance optimization</s:String>
+    <s:String x:Key="Str_VfsCacheMode">Cache mode (--vfs-cache-mode)</s:String>
+    <s:String x:Key="Str_VfsCacheModeTooltip">Controls how rclone caches files. "full" is recommended on Windows for best compatibility.</s:String>
+    <s:String x:Key="Str_VfsCacheModeHelp">Defines HOW files are stored on the local disk. "off" caches nothing (slower and less compatible); "writes" only stores what you write; "full" downloads and stores everything before use, making it the most stable and recommended option on Windows.</s:String>
+    <s:String x:Key="Str_BufferSize">Read buffer size (--buffer-size)</s:String>
+    <s:String x:Key="Str_BufferSizeTooltip">Memory buffer used per file transfer. Larger values improve throughput on fast links.</s:String>
+    <s:String x:Key="Str_BufferSizeHelp">This is the amount of RAM rclone reserves to read each file. A higher value speeds up video playback and large copies, but uses more memory. If you have little RAM use 16M or 32M; if you have plenty, use 64M or 128M.</s:String>
+    <s:String x:Key="Str_DirCacheTime">Directory cache time (--dir-cache-time)</s:String>
+    <s:String x:Key="Str_DirCacheTimeTooltip">How long directory listings are cached. Longer values reduce API calls.</s:String>
+    <s:String x:Key="Str_DirCacheTimeHelp">How long rclone remembers the list of folders and files before asking the server again. A high value (for example 72h) makes browsing much faster and reduces API usage; a low value makes changes appear sooner but generates more traffic.</s:String>
+    <s:String x:Key="Str_VfsHint">Leave a field empty to use the value defined by the selected profile.</s:String>
+    <s:String x:Key="Str_CryptRemoteLabel">Underlying remote and path</s:String>
+    <s:String x:Key="Str_CryptRemoteTooltip">Remote and folder to encrypt, e.g. MyDrive:/SecureFolder</s:String>
+    <s:String x:Key="Str_CryptPasswordLabel">Encryption password</s:String>
+    <s:String x:Key="Str_CryptPasswordTooltip">Password used to encrypt and decrypt the files. Keep it safe: without it the data cannot be recovered.</s:String>
+    <s:String x:Key="Str_CryptFilenameEncryptionLabel">Filename obfuscation</s:String>
+    <s:String x:Key="Str_CryptFilenameEncryptionTooltip">How file names are hidden: standard, obfuscate or off.</s:String>
+    <s:String x:Key="Str_CryptHint">The encrypted remote wraps an existing remote. Mount it like any other drive to read and write transparently.</s:String>
+    <s:String x:Key="Str_CryptRemoteRequired">Please enter the underlying remote and path (e.g. MyDrive:/SecureFolder).</s:String>
+    <s:String x:Key="Str_CryptPasswordRequired">Please enter the encryption password.</s:String>
+    <s:String x:Key="Str_TotalOnDisk">TOTAL ON DISK</s:String>
+    <s:String x:Key="Str_PurgeSsd">PURGE SSD CACHE</s:String>
+    <s:String x:Key="Str_Refresh">REFRESH</s:String>
+    <s:String x:Key="Str_OpenFolder">OPEN FOLDER</s:String>
+    <s:String x:Key="Str_OpenFolderTooltip">Opens rclone's cache folder (%LOCALAPPDATA%\rclone) in Windows Explorer.</s:String>
+
+    <!-- Activity log -->
+    <s:String x:Key="Str_Activity">ACTIVITY</s:String>
+
+    <!-- Mount profiles -->
+    <s:String x:Key="Str_ProfileSafeReadName">Safe Read (Anti-Ransomware)</s:String>
+    <s:String x:Key="Str_ProfileSafeReadDescription">Mounts the drive as read-only with no disk cache. Ideal for critical data: no local process can modify or encrypt the remote files.</s:String>
+    <s:String x:Key="Str_ProfileSafeReadPros">Immune to ransomware and accidental deletions; zero writes to the SSD; minimal RAM usage.</s:String>
+    <s:String x:Key="Str_ProfileSafeReadCons">Does not allow creating, editing or deleting files; browsing may be slower because it does not cache to disk.</s:String>
+
+    <s:String x:Key="Str_ProfileHighPerformanceName">High Performance (5GB SSD Cache)</s:String>
+    <s:String x:Key="Str_ProfileHighPerformanceDescription">Full VFS cache on disk up to 5 GB with 64 MB read chunks. Maximum browsing and streaming speed, at the cost of SSD writes.</s:String>
+    <s:String x:Key="Str_ProfileHighPerformancePros">Maximum browsing and streaming speed; supports read and write; open files stay consistent.</s:String>
+    <s:String x:Key="Str_ProfileHighPerformanceCons">Writes cache to the SSD (wear); uses up to 5 GB of disk; higher RAM usage.</s:String>
+
+    <s:String x:Key="Str_ProfileBulkTransferName">Bulk Transfer (RAM Buffer)</s:String>
+    <s:String x:Key="Str_ProfileBulkTransferDescription">Write cache in RAM with a 128 MB buffer. Designed for bulk copies without wearing the SSD, with directory refresh every hour.</s:String>
+    <s:String x:Key="Str_ProfileBulkTransferPros">Does not wear the SSD (RAM cache); excellent for bulk copies; lower write latency.</s:String>
+    <s:String x:Key="Str_ProfileBulkTransferCons">Buffered data is lost if the process closes abruptly; higher RAM usage; slow directory refresh.</s:String>
+
+    <s:String x:Key="Str_ProfileCustomName">Custom</s:String>
+    <s:String x:Key="Str_ProfileCustomDescription">Custom profile with user-defined arguments.</s:String>
+    <s:String x:Key="Str_ProfileCustomPros">Total control over the rclone arguments.</s:String>
+    <s:String x:Key="Str_ProfileCustomCons">Requires advanced knowledge of rclone flags.</s:String>
+
+    <s:String x:Key="Str_Pros">Pros</s:String>
+    <s:String x:Key="Str_Cons">Cons</s:String>
+
+    <!-- Profile badges -->
+    <s:String x:Key="Str_BadgeReadOnly">READ ONLY</s:String>
+    <s:String x:Key="Str_BadgeSsdCache">SSD CACHE (5GB)</s:String>
+    <s:String x:Key="Str_BadgeStreamingRam">RAM STREAMING</s:String>
+    <s:String x:Key="Str_BadgeProfile">PROFILE</s:String>
+
+    <!-- Mount mode labels -->
+    <s:String x:Key="Str_ModePhysicalDisk">PHYSICAL DISK</s:String>
+    <s:String x:Key="Str_ModeNetworkDrive">NETWORK DRIVE</s:String>
+
+    <!-- Mount mode pros/cons -->
+    <s:String x:Key="Str_ModePhysicalPros">Maximum compatibility, Windows Search indexing, Recycle Bin and native operations; better performance on large copies.</s:String>
+    <s:String x:Key="Str_ModePhysicalCons">Requires WinFsp; slower startup; sensitive to network drops (may freeze Explorer).</s:String>
+    <s:String x:Key="Str_ModeNetworkPros">Does not require WinFsp in local mode; fast startup; tolerant to disconnections; ideal for remote access.</s:String>
+    <s:String x:Key="Str_ModeNetworkCons">Some apps do not see it as a real disk; no indexing or Recycle Bin; slightly lower performance on massive copies.</s:String>
+
+    <!-- Bandwidth options -->
+    <s:String x:Key="Str_BandwidthUnlimited">Unlimited</s:String>
+
+    <!-- Setup window -->
+    <s:String x:Key="Str_SetupTitle">Visual Rclone - Initial Setup</s:String>
+    <s:String x:Key="Str_SetupHeader">Initial security setup</s:String>
+    <s:String x:Key="Str_SetupPinRequirements">PIN REQUIREMENTS</s:String>
+    <s:String x:Key="Str_SetupProtectPanel">Protect your control panel</s:String>
+    <s:String x:Key="Str_SetupCreatePinDescription">Create a master PIN to protect access to the panel. You will need it every time you open the application.</s:String>
+    <s:String x:Key="Str_SetupMasterPin">MASTER PIN</s:String>
+    <s:String x:Key="Str_SetupConfirmPin">CONFIRM PIN</s:String>
+    <s:String x:Key="Str_SetupReminderPhrase">REMINDER PHRASE</s:String>
+    <s:String x:Key="Str_SetupOptional">(optional)</s:String>
+    <s:String x:Key="Str_SetupReminderHint">A hint only you understand, shown on the lock screen if you forget your PIN.</s:String>
+    <s:String x:Key="Str_SetupCreatePinButton">CREATE PIN AND CONTINUE</s:String>
+
+    <!-- Lock window -->
+    <s:String x:Key="Str_LockTitle">Visual Rclone - Locked</s:String>
+    <s:String x:Key="Str_LockPanelLocked">PANEL LOCKED</s:String>
+    <s:String x:Key="Str_LockEnterPin">Enter your master PIN to unlock</s:String>
+    <s:String x:Key="Str_LockYourReminder">YOUR REMINDER PHRASE</s:String>
+    <s:String x:Key="Str_LockTrustDevice">Trust this device</s:String>
+    <s:String x:Key="Str_LockTrustDeviceDescription">It will not ask for the PIN again on this computer for the selected time.</s:String>
+    <s:String x:Key="Str_LockUnlock">UNLOCK</s:String>
+    <s:String x:Key="Str_LockMountsRemain">Mounts remain active while the panel is locked.</s:String>
+
+    <!-- Trust durations -->
+    <s:String x:Key="Str_Trust1Day">1 day</s:String>
+    <s:String x:Key="Str_Trust7Days">7 days</s:String>
+    <s:String x:Key="Str_Trust30Days">30 days</s:String>
+    <s:String x:Key="Str_TrustForever">Forever</s:String>
+
+    <!-- Log viewer -->
+    <s:String x:Key="Str_LogViewerTitle">Diagnostic Console</s:String>
+    <s:String x:Key="Str_LogViewerHeader">DIAGNOSTIC CONSOLE</s:String>
+    <s:String x:Key="Str_LogViewerClear">CLEAR</s:String>
+    <s:String x:Key="Str_LogViewerClearTooltip">Clears the log buffer for this drive.</s:String>
+    <s:String x:Key="Str_LogViewerHint">The last 100 lines of rclone stdout/stderr are kept for this drive.</s:String>
+    <s:String x:Key="Str_LogViewerEmpty">No log lines captured yet.</s:String>
+
+    <!-- Empty state -->
+    <s:String x:Key="Str_EmptyNoConfigTitle">rclone.conf not found</s:String>
+    <s:String x:Key="Str_EmptyNoConfigMessage">No rclone configuration file was found. Create your remotes with 'rclone config' and then press SYNC REMOTES.</s:String>
+    <s:String x:Key="Str_EmptyNoRemotesTitle">No remotes detected</s:String>
+    <s:String x:Key="Str_EmptyNoRemotesMessage">The rclone.conf file exists but contains no remotes. Add one with 'rclone config' and press SYNC REMOTES.</s:String>
+
+    <!-- Status messages -->
+    <s:String x:Key="Str_StatusReady">Ready.</s:String>
+    <s:String x:Key="Str_StatusInitializing">Initializing...</s:String>
+    <s:String x:Key="Str_StatusNotDetected">Not detected</s:String>
+    <s:String x:Key="Str_StatusMounting">Mounting drives...</s:String>
+    <s:String x:Key="Str_StatusUnmounting">Unmounting drives...</s:String>
+    <s:String x:Key="Str_StatusPurging">Purging VFS cache...</s:String>
+    <s:String x:Key="Str_StatusConfigSaved">Configuration saved.</s:String>
+    <s:String x:Key="Str_StatusNoEnabledRemotes">There are no enabled remotes to mount.</s:String>
+    <s:String x:Key="Str_StatusCacheFolderOpened">Cache folder opened in Explorer.</s:String>
+
+    <!-- Errors -->
+    <s:String x:Key="Str_ErrorEnterPin">Enter your PIN.</s:String>
+    <s:String x:Key="Str_ErrorIncorrectPin">Incorrect PIN.</s:String>
+    <s:String x:Key="Str_ErrorIncorrectPinAttempts">Incorrect PIN ({0} failed attempts).</s:String>
+    <s:String x:Key="Str_ErrorEnterAPin">Enter a PIN.</s:String>
+    <s:String x:Key="Str_ErrorPinTooShortPlain">The PIN must be at least {0} characters.</s:String>
+    <s:String x:Key="Str_ErrorSavePin">Could not save the PIN: {0}</s:String>
+    <s:String x:Key="Str_ErrorPinTooShort">The PIN must be at least {0} characters (you have {1}).</s:String>
+    <s:String x:Key="Str_ErrorRepeatPin">Repeat the PIN in the confirmation field.</s:String>
+    <s:String x:Key="Str_ErrorPinsDoNotMatch">The PINs do not match.</s:String>
+    <s:String x:Key="Str_ErrorPinAlreadyExists">A PIN is already configured.</s:String>
+    <s:String x:Key="Str_ErrorPinRequirements">Requirements: minimum {0} characters.</s:String>
+    <s:String x:Key="Str_ErrorOpenCacheFolder">Could not open the cache folder: {0}</s:String>
+
+    <!-- Runtime status / activity log messages -->
+    <s:String x:Key="Str_NotDetected">Not detected</s:String>
+    <s:String x:Key="Str_StatusReadyRemotes">Ready. {0} remote(s) detected.</s:String>
+    <s:String x:Key="Str_StatusMountCompleted">Mount completed: {0}/{1} drive(s).</s:String>
+    <s:String x:Key="Str_StatusUnmountCompleted">Unmount completed: {0} drive(s).</s:String>
+    <s:String x:Key="Str_StatusBandwidthSaved">Limit "{0}" saved (no mounted drives).</s:String>
+    <s:String x:Key="Str_StatusBandwidthApplied">Bandwidth limit: {0} ({1}/{2}).</s:String>
+    <s:String x:Key="Str_StatusPurgingVfs">Purging VFS cache...</s:String>
+    <s:String x:Key="Str_LogOrphansCleaned">Cleaned {0} orphan rclone process(es).</s:String>
+    <s:String x:Key="Str_LogWarnRcloneMissing">WARNING: rclone.exe not found. Configure the path in Settings.</s:String>
+    <s:String x:Key="Str_LogWarnWinFspMissing">WARNING: WinFsp not detected. Drive mounting will fail.</s:String>
+    <s:String x:Key="Str_LogSyncedRemotes">Synced {0} remote(s) from {1}.</s:String>
+    <s:String x:Key="Str_LogMountAllNoRemotes">Mount All: no enabled remotes.</s:String>
+    <s:String x:Key="Str_LogMountAllResult">Mount All -> {0}/{1} drive(s) mounted.</s:String>
+    <s:String x:Key="Str_LogUnmountAllResult">Unmount All -> {0} drive(s) unmounted.</s:String>
+    <s:String x:Key="Str_LogLetterRestored">[{0}] Letter {1}: restored in Explorer.</s:String>
+    <s:String x:Key="Str_LogLetterHidden">[{0}] Letter {1}: hidden in Explorer.</s:String>
+    <s:String x:Key="Str_LogCacheFolderCreated">Cache folder created: {0}</s:String>
+    <s:String x:Key="Str_LogErrorOpenCacheFolder">ERROR opening the cache folder: {0}</s:String>
+    <s:String x:Key="Str_LogConfigSaved">Configuration saved to appsettings.json.</s:String>
+    <s:String x:Key="Str_LogBandwidthNoMounts">Bandwidth -> {0} (no mounted drives).</s:String>
+    <s:String x:Key="Str_LogBandwidthApplied">Bandwidth -> {0} applied to {1}/{2} drive(s).</s:String>
+
+    <!-- Manual rclone.conf location (portable installs) -->
+    <s:String x:Key="Str_LocateConfigButton">Locate rclone.conf file...</s:String>
+    <s:String x:Key="Str_LocateConfigDialogTitle">Select your rclone.conf file</s:String>
+    <s:String x:Key="Str_LocateConfigFilter">Config files (*.conf)|*.conf|All files (*.*)|*.*</s:String>
+    <s:String x:Key="Str_LogConfigPathSaved">Custom rclone.conf path saved.</s:String>
+    <s:String x:Key="Str_LogConfigNoRemotes">The selected file does not contain any remotes.</s:String>
+
+    <!-- Custom bandwidth (editable ComboBox) -->
+    <s:String x:Key="Str_StatusBandwidthInvalid">Invalid bandwidth format. Use e.g. 500K, 1.5M, 2G.</s:String>
+    <s:String x:Key="Str_LogBandwidthInvalid">Invalid bandwidth value. Use a number followed by K, M or G.</s:String>
+
+    <!-- Config Manager (Phase 4) -->
+    <s:String x:Key="Str_ManageAccounts">ADD / EDIT ACCOUNTS</s:String>
+    <s:String x:Key="Str_ManageAccountsTooltip">Open the interactive rclone.conf editor: add, edit or delete remotes without touching the terminal.</s:String>
+    <s:String x:Key="Str_ConfigManagerTitle">RCLONE CONFIG MANAGER</s:String>
+    <s:String x:Key="Str_ConfigManagerSubtitle">Manage your remotes visually. Changes are written safely to rclone.conf.</s:String>
+    <s:String x:Key="Str_AddRemote">ADD NEW REMOTE</s:String>
+    <s:String x:Key="Str_EditRemote">EDIT</s:String>
+    <s:String x:Key="Str_DeleteRemote">DELETE</s:String>
+    <s:String x:Key="Str_DeleteRemoteConfirm">Delete remote "{0}"? This cannot be undone.</s:String>
+    <s:String x:Key="Str_EditRemoteTitle">EDIT REMOTE</s:String>
+    <s:String x:Key="Str_EditRemoteSubtitle">Review and modify the settings of this remote. The backend type cannot be changed.</s:String>
+    <s:String x:Key="Str_EditName">Name</s:String>
+    <s:String x:Key="Str_EditType">Backend type</s:String>
+    <s:String x:Key="Str_EditRootFolder">Root folder (optional)</s:String>
+    <s:String x:Key="Str_EditRootFolderHint">Leave empty to use the whole drive.</s:String>
+    <s:String x:Key="Str_EditRootFolderInvalid">The root folder cannot contain double quotes.</s:String>
+    <s:String x:Key="Str_SaveChanges">SAVE CHANGES</s:String>
+    <s:String x:Key="Str_SavingRemote">Saving changes...</s:String>
+    <s:String x:Key="Str_StatusRemoteUpdated">Remote "{0}" updated.</s:String>
+    <s:String x:Key="Str_AdvancedOptions">Advanced options</s:String>
+    <s:String x:Key="Str_AdvancedOptionsHint">Every key/value pair stored for this remote. Edit any value, or add your own rclone parameters.</s:String>
+    <s:String x:Key="Str_Key">Key</s:String>
+    <s:String x:Key="Str_Value">Value</s:String>
+    <s:String x:Key="Str_AddOption">ADD OPTION</s:String>
+    <s:String x:Key="Str_RemoveOption">Remove</s:String>
+    <s:String x:Key="Str_EditKeyRequired">Every option needs a key name.</s:String>
+    <s:String x:Key="Str_EditKeyInvalid">Option keys cannot contain '=' or line breaks.</s:String>
+    <s:String x:Key="Str_EditKeyDuplicate">The key "{0}" is repeated.</s:String>
+    <s:String x:Key="Str_EditNameHint">Renaming updates the remote everywhere it is referenced.</s:String>
+    <s:String x:Key="Str_Reauthenticate">RE-AUTHENTICATE (OAUTH)</s:String>
+    <s:String x:Key="Str_ReauthenticateHint">Renew the login token by signing in again in your browser. Use this if the remote stopped working or the token expired.</s:String>
+    <s:String x:Key="Str_OAuthCredentials">OAuth credentials</s:String>
+    <s:String x:Key="Str_OAuthCredentialsHint">Your own app credentials for this provider. Leave a field empty to remove that key from the remote.</s:String>
+    <s:String x:Key="Str_EditClientIdLabel">Client ID</s:String>
+    <s:String x:Key="Str_EditClientSecretLabel">Client Secret</s:String>
+    <s:String x:Key="Str_ClientSecretHint">The secret is stored encrypted by rclone. If you do not change it, the existing value is kept.</s:String>
+    <s:String x:Key="Str_OAuthReauthWarning">Note: if you change the Client ID or Client Secret, the browser will open to reauthorize the account when you save. This is required to generate new access tokens linked to your own credentials and to avoid the traffic limit of Rclone's public app.</s:String>
+    <s:String x:Key="Str_OAuthReauthConfirmTitle">Reauthorization required</s:String>
+    <s:String x:Key="Str_OAuthReauthConfirmMessage">Changes to the API credentials were detected. The browser will open so you can sign in again and generate the new tokens. Do you want to continue?</s:String>
+    <s:String x:Key="Str_ReauthInProgress">Waiting for authentication in your browser...</s:String>
+    <s:String x:Key="Str_ReauthSuccess">Authentication renewed successfully.</s:String>
+    <s:String x:Key="Str_ReauthFailed">Authentication failed: {0}</s:String>
+    <s:String x:Key="Str_SensitiveHidden">Protected value (hidden)</s:String>
+    <s:String x:Key="Str_SensitiveHiddenHint">This value is a secret managed by rclone. It is hidden for your safety and cannot be edited by hand. Use Re-Authenticate to renew it.</s:String>
+    <s:String x:Key="Str_ReadOnlyKey">Read-only</s:String>
+    <s:String x:Key="Str_OptionHelp">Help</s:String>
+    <s:String x:Key="Str_SensitiveCount">{0} protected value(s) hidden</s:String>
+    <s:String x:Key="Str_NoRemotesConfigured">No remotes configured yet. Add your first account to get started.</s:String>
+    <s:String x:Key="Str_WizardStepName">Step 1 of 4 - Remote name</s:String>
+    <s:String x:Key="Str_WizardStepProvider">Step 2 of 4 - Provider</s:String>
+    <s:String x:Key="Str_WizardStepCredentials">Step 3 of 4 - Credentials</s:String>
+    <s:String x:Key="Str_WizardStepAuthenticate">Step 4 of 4 - Authenticate</s:String>
+    <s:String x:Key="Str_RemoteNameLabel">Remote name</s:String>
+    <s:String x:Key="Str_RemoteNameHint">A short identifier, e.g. "my_drive" (no spaces).</s:String>
+    <s:String x:Key="Str_ProviderLabel">Provider</s:String>
+    <s:String x:Key="Str_ClientIdLabel">Client ID (optional)</s:String>
+    <s:String x:Key="Str_ClientSecretLabel">Client Secret (optional)</s:String>
+    <s:String x:Key="Str_CredentialsHint">Leave blank to use rclone's default credentials (slower). For maximum performance, creating your own Client ID is recommended.</s:String>
+    <s:String x:Key="Str_HowToGetClientId">How do I get my Client ID and Secret?</s:String>
+    <s:String x:Key="Str_AuthenticateEmptyState">Click 'Authenticate' to open the browser and sign in.</s:String>
+    <s:String x:Key="Str_AdvancedProviderLabel">Choose a backend</s:String>
+    <s:String x:Key="Str_AdvancedProviderHint">rclone supports more than 70 backends. Pick the one you need from this list.</s:String>
+    <s:String x:Key="Str_AdvancedProviderRequired">Please choose a backend from the list.</s:String>
+    <s:String x:Key="Str_ProviderUserLabel">User</s:String>
+    <s:String x:Key="Str_ProviderPasswordLabel">Password</s:String>
+    <s:String x:Key="Str_NoCredentialsNeeded">This backend does not require credentials. You can continue to the next step.</s:String>
+    <s:String x:Key="Str_Authenticate">AUTHENTICATE</s:String>
+    <s:String x:Key="Str_Authenticating">Waiting for OAuth in your browser...</s:String>
+    <s:String x:Key="Str_ProviderOptionsLabel">Configuration</s:String>
+    <s:String x:Key="Str_LoadingOptions">Loading the provider options from rclone...</s:String>
+    <s:String x:Key="Str_AuthenticateInBrowser">AUTHENTICATE IN BROWSER</s:String>
+    <s:String x:Key="Str_TestAndSave">TEST CONNECTION AND SAVE</s:String>
+    <s:String x:Key="Str_OAuthHint">rclone will open your browser to complete the sign-in.</s:String>
+    <s:String x:Key="Str_DirectHint">The remote will be created and tested against the provider.</s:String>
+    <s:String x:Key="Str_TestingConnection">Creating and testing the remote...</s:String>
+    <s:String x:Key="Str_StatusTestFailed">The remote was created but the connection test failed: {0}</s:String>
+    <s:String x:Key="Str_Back">BACK</s:String>
+    <s:String x:Key="Str_Next">NEXT</s:String>
+    <s:String x:Key="Str_Cancel">CANCEL</s:String>
+    <s:String x:Key="Str_SaveRemote">SAVE REMOTE</s:String>
+    <s:String x:Key="Str_Close">CLOSE</s:String>
+    <s:String x:Key="Str_StatusRemoteCreated">Remote "{0}" created successfully.</s:String>
+    <s:String x:Key="Str_StatusRemoteDeleted">Remote "{0}" deleted.</s:String>
+    <s:String x:Key="Str_LogRemoteCreated">Remote created: {0} ({1}).</s:String>
+    <s:String x:Key="Str_LogRemoteDeleted">Remote deleted: {0}.</s:String>
+    <s:String x:Key="Str_LogRemoteCreateFailed">ERROR creating remote "{0}": {1}</s:String>
+    <s:String x:Key="Str_LogRemoteDeleteFailed">ERROR deleting remote "{0}": {1}</s:String>
+    <s:String x:Key="Str_RemoteNameRequired">Please enter a remote name.</s:String>
+    <s:String x:Key="Str_RemoteNameInvalid">The name cannot contain spaces or the characters \\ / : * ?&quot; &lt; &gt; |</s:String>
+    <s:String x:Key="Str_RemoteNameExists">A remote with that name already exists.</s:String>
+
+    <!-- Fase 1: comprobacion de dependencias (pre-flight) -->
+    <s:String x:Key="Str_DependencyTitle">Missing dependencies</s:String>
+    <s:String x:Key="Str_DependencyHeader">Required components are missing</s:String>
+    <s:String x:Key="Str_DependencyMissingBoth">rclone.exe and WinFsp are both missing. Install them to continue.</s:String>
+    <s:String x:Key="Str_DependencyMissingRclone">rclone.exe was not found. Install it to continue.</s:String>
+    <s:String x:Key="Str_DependencyMissingWinFsp">WinFsp was not found. It is required to mount drives.</s:String>
+    <s:String x:Key="Str_DependencyRcloneName">rclone</s:String>
+    <s:String x:Key="Str_DependencyRcloneDescription">The engine that connects to your cloud providers. Place rclone.exe next to this app or add it to PATH.</s:String>
+    <s:String x:Key="Str_DependencyWinFspName">WinFsp</s:String>
+    <s:String x:Key="Str_DependencyWinFspDescription">The Windows file system driver required to mount drives as letters.</s:String>
+    <s:String x:Key="Str_DependencyDownloadRclone">DOWNLOAD RCLONE</s:String>
+    <s:String x:Key="Str_DependencyDownloadWinFsp">DOWNLOAD WINFSP</s:String>
+    <s:String x:Key="Str_DependencyFooter">After installing, click Retry to run the check again.</s:String>
+    <s:String x:Key="Str_DependencyRetry">RETRY</s:String>
+    <s:String x:Key="Str_DependencyExit">EXIT</s:String>
+
+    <!-- Panel de ajustes de la aplicacion (barra lateral derecha) -->
+    <s:String x:Key="Str_Settings">Settings</s:String>
+    <s:String x:Key="Str_StartupSection">Startup</s:String>
+
+    <!-- FASE 2: modo segundo plano (bandeja + arranque con Windows) -->
+    <s:String x:Key="Str_StartWithWindows">Start with Windows</s:String>
+    <s:String x:Key="Str_StartWithWindowsTooltip">Launch the app minimized in the system tray when you sign in to Windows.</s:String>
+    <s:String x:Key="Str_TrayOpen">Open Panel</s:String>
+    <s:String x:Key="Str_TrayUnmountAll">Unmount All</s:String>
+    <s:String x:Key="Str_TrayExit">Exit Completely</s:String>
+    <s:String x:Key="Str_TrayUnmountDone">All drives have been unmounted.</s:String>
+    <s:String x:Key="Str_StatusStartupEnabled">The app will start with Windows (minimized).</s:String>
+    <s:String x:Key="Str_StatusStartupDisabled">The app will no longer start with Windows.</s:String>
+    <s:String x:Key="Str_StatusStartupShortcutFailed">Could not update the Windows startup shortcut.</s:String>
+
+    <!-- FASE 4: soporte de rclone.conf cifrado -->
+    <s:String x:Key="Str_PasswordTitle">Encrypted Configuration</s:String>
+    <s:String x:Key="Str_PasswordHeader">Encrypted configuration detected</s:String>
+    <s:String x:Key="Str_PasswordDescription">Your rclone.conf is encrypted. Enter the configuration password to load your remotes. The password is only kept in memory and is never saved to disk.</s:String>
+    <s:String x:Key="Str_PasswordLabel">Configuration password</s:String>
+    <s:String x:Key="Str_PasswordUnlock">UNLOCK</s:String>
+    <s:String x:Key="Str_PasswordExit">EXIT</s:String>
+    <s:String x:Key="Str_PasswordEmpty">Please enter the configuration password.</s:String>
+    <s:String x:Key="Str_PasswordIncorrect">Incorrect password. Please try again.</s:String>
+    <s:String x:Key="Str_PasswordSecurityNote">The password is passed to rclone through a process-level environment variable (RCLONE_CONFIG_PASS) and is cleared when the app closes.</s:String>
+
+    <!-- FIRST-RUN INTERNAL INSTALLER (1 click) -->
+    <s:String x:Key="Str_FirstRunTitle">Initial setup</s:String>
+    <s:String x:Key="Str_FirstRunSubtitle">Initial setup of Visual Rclone. We detected that some components required to mount your drives are missing. You can install them right now with a single click.</s:String>
+    <s:String x:Key="Str_FirstRunFooter">rclone is downloaded from the official site (downloads.rclone.org) and installed into the app's internal folder. WinFsp requires a system installer with administrator privileges: the official download page will open and, once its wizard finishes, click "Retry detection".</s:String>
+    <s:String x:Key="Str_QuickInstall">QUICK INSTALL (1 CLICK)</s:String>
+    <s:String x:Key="Str_DownloadWinFsp">Download WinFsp</s:String>
+    <s:String x:Key="Str_RetryDetection">Retry detection</s:String>
+    <s:String x:Key="Str_Continue">Continue</s:String>
+    <s:String x:Key="Str_Exit">Exit</s:String>
+    <s:String x:Key="Str_StatusInstalled">Installed</s:String>
+    <s:String x:Key="Str_StatusPending">Pending</s:String>
+    <s:String x:Key="Str_InstallingRclone">Downloading and installing rclone...</s:String>
+    <s:String x:Key="Str_RcloneInstalledOk">rclone was installed successfully.</s:String>
+    <s:String x:Key="Str_DependenciesStillMissing">Some dependencies are still missing. Install them to continue.</s:String>
+
+    <!-- FEATURE Monitor de Trafico -->
+    <s:String x:Key="Str_TrafficMonitorTooltip">Opens the real-time traffic monitor (upload/download speed chart) for this drive.</s:String>
+    <s:String x:Key="Str_TrafficMonitorTitle">Traffic Monitor</s:String>
+    <s:String x:Key="Str_TrafficMonitorHeader">REAL-TIME TRAFFIC MONITOR</s:String>
+    <s:String x:Key="Str_TrafficDownloadNow">DOWNLOAD NOW</s:String>
+    <s:String x:Key="Str_TrafficUploadNow">UPLOAD NOW</s:String>
+    <s:String x:Key="Str_TrafficDownloadPeak">DOWNLOAD PEAK</s:String>
+    <s:String x:Key="Str_TrafficUploadPeak">UPLOAD PEAK</s:String>
+    <s:String x:Key="Str_TrafficDownload">Download</s:String>
+    <s:String x:Key="Str_TrafficUpload">Upload</s:String>
+    <s:String x:Key="Str_TrafficTransfers">Transfers:</s:String>
+    <s:String x:Key="Str_TrafficSamples">Samples:</s:String>
+    <s:String x:Key="Str_TrafficNoData">Waiting for traffic data...</s:String>
+    <s:String x:Key="Str_TrafficLive">LIVE</s:String>
+    <s:String x:Key="Str_TrafficIdle">IDLE</s:String>
+
+    <!-- FEATURE Exit Dialog (close confirmation) -->
+    <s:String x:Key="ExitDialogTitle">Close Visual Rclone</s:String>
+    <s:String x:Key="ExitDialogHeader">CLOSE APPLICATION</s:String>
+    <s:String x:Key="ExitDialogMessage">Do you want to keep Visual Rclone running in the background to keep your drives mounted? Select 'Background' to minimize to the system tray, or 'Exit' to close the app and unmount everything.</s:String>
+    <s:String x:Key="ExitBtnBackground">RUN IN BACKGROUND</s:String>
+    <s:String x:Key="ExitBtnClose">EXIT AND UNMOUNT</s:String>
+    <s:String x:Key="ExitBtnCancel">CANCEL</s:String>
+
+    <!-- FEATURE i18n audit: localized error dialogs and fallbacks -->
+    <s:String x:Key="Str_FatalErrorTitle">Visual Rclone - Unexpected error</s:String>
+    <s:String x:Key="Str_FatalErrorStartup">Error starting the application</s:String>
+    <s:String x:Key="Str_FatalErrorUnhandled">Unhandled error</s:String>
+    <s:String x:Key="Str_FatalErrorCritical">Critical unhandled error</s:String>
+    <s:String x:Key="Str_ErrorLoadingRemotes">Error loading the remote list:</s:String>
+    <s:String x:Key="Str_ErrorOpeningEditor">Error opening editor</s:String>
+    <s:String x:Key="Str_ErrorPreparingEditor">Error preparing the editor:</s:String>
+    <s:String x:Key="Str_ErrorLoadingSchema">Error loading the backend schema '{0}':</s:String>
+    <s:String x:Key="Str_SensitiveCountFallback">{0} protected value(s) hidden</s:String>
+
+    <!-- FEATURE Delete confirmation dialog -->
+    <s:String x:Key="ConfirmDialogTitle">Confirm action</s:String>
+    <s:String x:Key="Str_DeleteConfirmHeader">DELETE REMOTE</s:String>
+    <s:String x:Key="Str_DeleteConfirmMessage">Are you sure you want to delete the remote '{0}' from rclone.conf? This action cannot be undone.</s:String>
+    <s:String x:Key="Str_DeleteConfirmButton">DELETE</s:String>
+    <s:String x:Key="Str_DeleteCancelButton">CANCEL</s:String>
+
+</ResourceDictionary>
