@@ -288,7 +288,7 @@ Every contribution, star ⭐ and share helps more than you think. Thank you!
 
 ## 🛠️ Built With & Credits
 
-**Visual Rclone** was designed and developed by **AIMDICK**.
+**Visual Rclone** was designed and developed by **AIMDYCK**.
 
 This project was built with the help of the following tools and technologies:
 

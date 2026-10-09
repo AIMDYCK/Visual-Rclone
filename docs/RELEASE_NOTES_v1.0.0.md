@@ -30,10 +30,10 @@ The first public release of **Visual Rclone**, a modern dark-themed control pane
 
 ## 🙏 Credits
 
-Designed and developed by **AIMDICK**.
+Designed and developed by **AIMDYCK**.
 
 Built with Visual Studio, Supermaven, Roo Code, and the DeepSeek API.
 
 ## 📄 License
 
-MIT — see [LICENSE](https://github.com/AIMDICK/Visual-Rclone/blob/main/LICENSE) for details.
+MIT — see [LICENSE](https://github.com/AIMDYCK/Visual-Rclone/blob/main/LICENSE) for details.
